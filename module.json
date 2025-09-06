@@ -1,0 +1,12 @@
+
+{
+    "name": "Ifulfillment",
+    "alias": "ifulfillment",
+    "description": "manage ifulfillment",
+    "keywords": ["ifulfillment"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Ifulfillment\\Providers\\IfulfillmentServiceProvider"
+    ],
+    "files": []
+}

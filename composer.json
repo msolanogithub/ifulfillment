@@ -1,0 +1,30 @@
+{
+    "name": "imagina/ifulfillment",
+    "description": "",
+    "authors": [
+        {
+            "name": "Imagina Colombia",
+            "email": "soporte@imaginacolombia.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Ifulfillment\\": "app/",
+            "Modules\\Ifulfillment\\Database\\Factories\\": "database/factories/",
+            "Modules\\Ifulfillment\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Ifulfillment\\Tests\\": "tests/"
+        }
+    }
+}
