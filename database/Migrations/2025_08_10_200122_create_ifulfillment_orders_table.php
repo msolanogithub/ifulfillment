@@ -16,12 +16,12 @@ return new class extends Migration {
       $table->increments('id');
       // Your fields...
       $table->string('external_id')->nullable();
-      $table->integer('customer_id')->unsigned();
+      $table->integer('account_id')->unsigned();
       $table->timestamp('due_date')->nullable();
-      $table->float('total_price')->default(0);
-      $table->float('total_items')->default(0);
+      $table->float('price')->default(0);
+      $table->float('quantity')->default(0);
       // Foreign keys
-      $table->foreign('customer_id')->references('id')->on('iuser__users')->onDelete('restrict');
+      $table->foreign('account_id')->references('id')->on('iaccount__accounts')->onDelete('restrict');
       // Audit fields
       $table->timestamps();
       $table->auditStamps();

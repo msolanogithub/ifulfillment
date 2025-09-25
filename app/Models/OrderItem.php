@@ -11,9 +11,9 @@ class OrderItem extends CoreModel
   public string $transformer = 'Modules\Ifulfillment\Transformers\OrderItemTransformer';
   public string $repository = 'Modules\Ifulfillment\Repositories\OrderItemRepository';
   public array $requestValidation = [
-      'create' => 'Modules\Ifulfillment\Http\Requests\CreateOrderItemRequest',
-      'update' => 'Modules\Ifulfillment\Http\Requests\UpdateOrderItemRequest',
-    ];
+    'create' => 'Modules\Ifulfillment\Http\Requests\CreateOrderItemRequest',
+    'update' => 'Modules\Ifulfillment\Http\Requests\UpdateOrderItemRequest',
+  ];
   public array $modelRelations = [
     //eg. 'relationName' => 'belongsToMany/hasMany',
   ];
@@ -29,13 +29,19 @@ class OrderItem extends CoreModel
   ];
   protected $fillable = [
     'order_id',
-    'entity_id',
-    'entity_type',
-    'entity_data',
+    'shoe_id',
     'quantity',
+    'options',
+    'sizes'
   ];
 
-  public function order(){
+  protected $casts = [
+    'options' => 'array',
+    'sizes' => 'array'
+  ];
+
+  public function order()
+  {
     return $this->belongsTo(Order::class, 'order_id');
   }
 

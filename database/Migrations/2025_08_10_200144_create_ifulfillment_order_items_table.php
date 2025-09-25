@@ -16,12 +16,13 @@ return new class extends Migration {
       $table->increments('id');
       // Your fields...
       $table->integer('order_id')->unsigned();
-      $table->integer('entity_id');
-      $table->string('entity_type');
-      $table->json('entity_data')->nullable();
-      $table->integer('quantity')->default(1);
+      $table->integer('shoe_id')->unsigned();
+      $table->integer('quantity')->unsigned();
+      $table->json('options');
+      $table->json('sizes');
       //foreign keys
       $table->foreign('order_id')->references('id')->on('ifulfillment__orders')->onDelete('cascade');
+      $table->foreign('shoe_id')->references('id')->on('ishoe__shoes')->onDelete('cascade');
       // Audit fields
       $table->timestamps();
       $table->auditStamps();

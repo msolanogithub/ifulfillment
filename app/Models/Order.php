@@ -2,6 +2,8 @@
 
 namespace Modules\Ifulfillment\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Imagina\Icore\Models\CoreModel;
 
 class Order extends CoreModel
@@ -30,18 +32,18 @@ class Order extends CoreModel
   ];
   protected $fillable = [
     'external_id',
-    'customer_id',
+    'account_id',
     'due_date',
-    'total_price',
-    'total_items'
+    'price',
+    'quantity'
   ];
 
-  public function customer()
+  public function account(): BelongsTo
   {
-    return $this->belongsTo('Modules\Iuser\Models\User', 'customer_id');
+    return $this->belongsTo('Modules\Iaccount\Models\Account', 'account_id');
   }
 
-  public function items()
+  public function items(): HasMany
   {
     return $this->hasMany(OrderItem::class, 'order_id');
   }
