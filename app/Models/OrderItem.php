@@ -3,6 +3,7 @@
 namespace Modules\Ifulfillment\Models;
 
 use Imagina\Icore\Models\CoreModel;
+use Modules\Ishoe\Models\Shoe;
 
 class OrderItem extends CoreModel
 {
@@ -45,8 +46,8 @@ class OrderItem extends CoreModel
     return $this->belongsTo(Order::class, 'order_id');
   }
 
-  public function entity()
+  public function shoe()
   {
-    return $this->morphTo(__FUNCTION__, 'entity_type', 'entity_id');
+    return $this->belongsTo(Shoe::class);
   }
 }

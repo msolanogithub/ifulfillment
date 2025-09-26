@@ -15,9 +15,11 @@ return new class extends Migration {
       $table->engine = 'InnoDB';
       $table->increments('id');
       // Your fields...
-      $table->string('external_id')->nullable();
       $table->integer('account_id')->unsigned();
-      $table->timestamp('due_date')->nullable();
+      $table->integer('locatable_id')->unsigned();
+      $table->date('due_date');
+      $table->string('external_id')->nullable();
+      $table->text('comment')->nullable();
       $table->float('price')->default(0);
       $table->float('quantity')->default(0);
       // Foreign keys
@@ -36,7 +38,7 @@ return new class extends Migration {
   public function down()
   {
     Schema::table('ifulfillment__orders', function (Blueprint $table) {
-      $table->dropForeign(['customer_id']);
+      $table->dropForeign(['account_id']);
     });
     Schema::dropIfExists('ifulfillment__orders');
   }

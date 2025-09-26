@@ -21,21 +21,32 @@ class Order extends CoreModel
     'items' => 'hasMany',
   ];
   //Instance external/internal events to dispatch with extraData
+  protected $fillable = [
+    'account_id',
+    'locatable_id',
+    'external_id',
+    'comment',
+    'due_date',
+    'quantity',
+    'price'
+  ];
   public array $dispatchesEventsWithBindings = [
     //eg. ['path' => 'path/module/event', 'extraData' => [/*...optional*/]]
-    'created' => [],
+    'created' => [
+      ['path' => 'Modules\Imedia\Events\CreateMedia']
+    ],
     'creating' => [],
-    'updated' => [],
+    'updated' => [
+      ['path' => 'Modules\Imedia\Events\UpdateMedia']
+    ],
     'updating' => [],
-    'deleting' => [],
+    'deleting' => [
+      ['path' => 'Modules\Imedia\Events\DeleteMedia']
+    ],
     'deleted' => []
   ];
-  protected $fillable = [
-    'external_id',
-    'account_id',
-    'due_date',
-    'price',
-    'quantity'
+  public array $mediaFillable = [
+    'mainfile' => 'single'
   ];
 
   public function account(): BelongsTo
@@ -46,5 +57,13 @@ class Order extends CoreModel
   public function items(): HasMany
   {
     return $this->hasMany(OrderItem::class, 'order_id');
+  }
+
+  public function files()
+  {
+    if (isModuleEnabled('Imedia')) {
+      return app(\Modules\Imedia\Relations\FilesRelation::class)->resolve($this);
+    }
+    return new \Imagina\Icore\Relations\EmptyRelation();
   }
 }
