@@ -2,6 +2,7 @@
 
 namespace Modules\Ifulfillment\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Imagina\Icore\Models\CoreModel;
 use Modules\Ishoe\Models\Shoe;
 
@@ -41,12 +42,12 @@ class OrderItem extends CoreModel
     'sizes' => 'array'
   ];
 
-  public function order()
+  public function order(): BelongsTo
   {
     return $this->belongsTo(Order::class, 'order_id');
   }
 
-  public function shoe()
+  public function shoe(): BelongsTo
   {
     return $this->belongsTo(Shoe::class);
   }

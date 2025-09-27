@@ -24,6 +24,7 @@ return new class extends Migration {
       $table->float('quantity')->default(0);
       // Foreign keys
       $table->foreign('account_id')->references('id')->on('iaccount__accounts')->onDelete('restrict');
+      $table->foreign('locatable_id')->references('id')->on('ilocation__locatables')->onDelete('restrict');
       // Audit fields
       $table->timestamps();
       $table->auditStamps();
@@ -39,6 +40,7 @@ return new class extends Migration {
   {
     Schema::table('ifulfillment__orders', function (Blueprint $table) {
       $table->dropForeign(['account_id']);
+      $table->dropForeign(['locatable_id']);
     });
     Schema::dropIfExists('ifulfillment__orders');
   }

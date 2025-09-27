@@ -54,6 +54,11 @@ class Order extends CoreModel
     return $this->belongsTo('Modules\Iaccount\Models\Account', 'account_id');
   }
 
+  public function locatable(): BelongsTo
+  {
+    return $this->belongsTo('Modules\Ilocation\Models\Locatable', 'locatable_id');
+  }
+
   public function items(): HasMany
   {
     return $this->hasMany(OrderItem::class, 'order_id');

@@ -29,7 +29,7 @@ Route::prefix('/ifulfillment/v1')->group(function () {
     ]);
     Route::apiCrud([
       'module' => 'ifulfillment',
-      'prefix' => 'orderitems',
+      'prefix' => 'order-items',
       'controller' => OrderItemApiController::class,
       'permission' => 'ifulfillment.orderitems',
       //'middleware' => ['create' => [], 'index' => [], 'show' => [], 'update' => [], 'delete' => [], 'restore' => []],
