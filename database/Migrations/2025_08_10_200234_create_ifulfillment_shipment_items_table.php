@@ -18,6 +18,7 @@ return new class extends Migration {
       $table->integer('shipping_id')->unsigned();
       $table->integer('order_item_id')->unsigned();
       $table->integer('quantity')->default(0);
+      $table->json('sizes');
       //foreign keys
       $table->foreign('shipping_id')->references('id')->on('ifulfillment__shipments')->onDelete('cascade');
       $table->foreign('order_item_id')->references('id')->on('ifulfillment__order_items')->onDelete('cascade');

@@ -31,6 +31,11 @@ class ShipmentItem extends CoreModel
     'shipping_id',
     'order_item_id',
     'quantity',
+    'sizes'
+  ];
+
+  protected $casts = [
+    'sizes' => 'array',
   ];
 
   public function shipment(){

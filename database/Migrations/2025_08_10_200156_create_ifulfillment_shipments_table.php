@@ -16,7 +16,7 @@ return new class extends Migration {
       $table->increments('id');
       // Your fields...
       $table->integer('order_id')->unsigned();
-      $table->integer('parent_id')->unsigned();
+      $table->integer('parent_id')->nullable();
       $table->integer('total_items')->default(0);
       $table->timestamp('shipped_at')->nullable();
       $table->text('comments')->nullable();
