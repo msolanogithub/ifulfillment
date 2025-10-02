@@ -2,7 +2,10 @@
 
 namespace Modules\Ifulfillment\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Imagina\Icore\Models\CoreModel;
+use Modules\Iaccount\Models\Account;
 
 class Shipment extends CoreModel
 {
@@ -15,9 +18,7 @@ class Shipment extends CoreModel
     'update' => 'Modules\Ifulfillment\Http\Requests\UpdateShipmentRequest',
   ];
   public array $modelRelations = [
-    //eg. 'relationName' => 'belongsToMany/hasMany',
-    'children' => 'hasMany',
-    'items' => 'hasMany',
+
   ];
   //Instance external/internal events to dispatch with extraData
   public array $dispatchesEventsWithBindings = [
@@ -30,7 +31,7 @@ class Shipment extends CoreModel
     'deleted' => []
   ];
   protected $fillable = [
-    'order_id',
+    'account_id',
     'parent_id',
     'total_items',
     'shipped_at',
@@ -40,23 +41,23 @@ class Shipment extends CoreModel
     'total_index'
   ];
 
-  public function order()
+  public function account(): BelongsTo
   {
-    return $this->belongsTo(Order::class, 'order_id');
+    return $this->belongsTo(Account::class, 'account_id');
   }
 
-  public function parent()
+  public function parent(): BelongsTo
   {
     return $this->belongsTo(Shipment::class, 'parent_id');
   }
 
-  public function children()
+  public function children(): HasMany
   {
     return $this->hasMany(Shipment::class, 'parent_id');
   }
 
-  public function items()
+  public function items(): HasMany
   {
-    return $this->hasMany(ShipmentItem::class, 'shipping_id');
+    return $this->hasMany(ShipmentItem::class, 'shipping_id', 'id');
   }
 }
