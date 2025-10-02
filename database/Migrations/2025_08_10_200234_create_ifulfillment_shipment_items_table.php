@@ -15,7 +15,7 @@ return new class extends Migration {
       $table->engine = 'InnoDB';
       $table->increments('id');
       // Your fields...
-      $table->integer('shipping_id')->unsigned();
+      $table->integer('shipping_id')->unsigned()->nullable();
       $table->integer('order_item_id')->unsigned();
       $table->integer('quantity')->default(0);
       $table->json('sizes');

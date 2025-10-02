@@ -67,6 +67,16 @@ class EloquentOrderItemRepository extends EloquentCoreRepository implements Orde
       });
     }
 
+    if (isset($filter->withPendingQuantity)) {
+      $query->whereRaw(
+        'COALESCE((
+          SELECT SUM(si.quantity)
+          FROM ifulfillment__shipment_items si
+          WHERE si.order_item_id = ifulfillment__order_items.id
+       ), 0) <> ifulfillment__order_items.quantity'
+      );
+    }
+
     //Response
     return $query;
   }

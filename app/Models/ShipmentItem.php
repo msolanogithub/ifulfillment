@@ -2,6 +2,7 @@
 
 namespace Modules\Ifulfillment\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Imagina\Icore\Models\CoreModel;
 
 class ShipmentItem extends CoreModel
@@ -11,9 +12,9 @@ class ShipmentItem extends CoreModel
   public string $transformer = 'Modules\Ifulfillment\Transformers\ShipmentItemTransformer';
   public string $repository = 'Modules\Ifulfillment\Repositories\ShipmentItemRepository';
   public array $requestValidation = [
-      'create' => 'Modules\Ifulfillment\Http\Requests\CreateShipmentItemRequest',
-      'update' => 'Modules\Ifulfillment\Http\Requests\UpdateShipmentItemRequest',
-    ];
+    'create' => 'Modules\Ifulfillment\Http\Requests\CreateShipmentItemRequest',
+    'update' => 'Modules\Ifulfillment\Http\Requests\UpdateShipmentItemRequest',
+  ];
   public array $modelRelations = [
     //eg. 'relationName' => 'belongsToMany/hasMany',
   ];
@@ -38,11 +39,13 @@ class ShipmentItem extends CoreModel
     'sizes' => 'array',
   ];
 
-  public function shipment(){
+  public function shipment(): BelongsTo
+  {
     return $this->belongsTo(Shipment::class, 'shipping_id');
   }
 
-  public function orderItem(){
+  public function orderItem(): BelongsTo
+  {
     return $this->belongsTo(OrderItem::class, 'order_item_id');
   }
 }

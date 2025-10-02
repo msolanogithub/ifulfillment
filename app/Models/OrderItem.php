@@ -3,6 +3,7 @@
 namespace Modules\Ifulfillment\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Imagina\Icore\Models\CoreModel;
 use Modules\Ishoe\Models\Shoe;
 
@@ -50,5 +51,10 @@ class OrderItem extends CoreModel
   public function shoe(): BelongsTo
   {
     return $this->belongsTo(Shoe::class);
+  }
+
+  public function shipmentItems(): hasMany
+  {
+    return $this->hasMany(ShipmentItem::class, 'order_item_id');
   }
 }
