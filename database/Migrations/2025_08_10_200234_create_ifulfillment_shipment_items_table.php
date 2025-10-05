@@ -17,6 +17,8 @@ return new class extends Migration {
       // Your fields...
       $table->integer('shipping_id')->unsigned()->nullable();
       $table->integer('order_item_id')->unsigned();
+      $table->integer('supplier_id')->unsigned();
+      $table->integer('stage_id')->unsigned()->default(0);
       $table->integer('quantity')->default(0);
       $table->json('sizes');
       //foreign keys
