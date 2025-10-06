@@ -22,7 +22,7 @@ return new class extends Migration {
       $table->integer('quantity')->default(0);
       $table->json('sizes');
       //foreign keys
-      $table->foreign('shipping_id')->references('id')->on('ifulfillment__shipments')->onDelete('cascade');
+      $table->foreign('shipping_id')->references('id')->on('ifulfillment__shipments')->nullOnDelete();
       $table->foreign('order_item_id')->references('id')->on('ifulfillment__order_items')->onDelete('cascade');
       // Audit fields
       $table->timestamps();

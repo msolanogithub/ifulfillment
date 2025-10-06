@@ -20,9 +20,8 @@ return new class extends Migration {
       $table->integer('total_items')->default(0);
       $table->timestamp('shipped_at')->nullable();
       $table->text('comments')->nullable();
-      $table->integer('quantity_per_index')->default(0);
-      $table->integer('index')->default(0);
-      $table->integer('total_index')->default(0);
+      $table->integer('units_per_package')->default(0);
+      $table->integer('packages_total')->default(0);
       // Foreign keys
       $table->foreign('account_id')->references('id')->on('iaccount__accounts')->onDelete('cascade');
       $table->foreign('parent_id')->references('id')->on('ifulfillment__shipments')->onDelete('cascade');

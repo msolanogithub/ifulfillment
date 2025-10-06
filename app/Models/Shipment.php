@@ -36,9 +36,8 @@ class Shipment extends CoreModel
     'total_items',
     'shipped_at',
     'comments',
-    'quantity_per_index',
-    'index',
-    'total_index'
+    'units_per_package',
+    'packages_total'
   ];
 
   public function account(): BelongsTo

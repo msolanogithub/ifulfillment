@@ -49,22 +49,26 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
      *
      */
 
-    if (isset($filter->shoeId)) {
-      $query->select('si.*')
-        ->from('ifulfillment__shipment_items as si')
-        ->join('ifulfillment__order_items as oi', 'oi.id', '=', 'si.order_item_id')
-        ->whereNull('si.shipping_id')
-        ->where('oi.shoe_id', $filter->shoeId);
-    }
+    $query->from('ifulfillment__shipment_items as si') // alias estable
+      ->select('si.*')
+      ->whereNull('si.shipping_id')                // condición común
+      // si se usa shoe/account/locatable, necesitamos join con order_items
+      ->when(
+        isset($filter->shoeId) || isset($filter->accountId) || isset($filter->locatableId),
+        fn($q) => $q->join('ifulfillment__order_items as oi', 'oi.id', '=', 'si.order_item_id')
+      )
+      // si se usa account o locatable, necesitamos join con orders
+      ->when(
+        isset($filter->accountId) || isset($filter->locatableId),
+        fn($q) => $q->join('ifulfillment__orders as o', 'o.id', '=', 'oi.order_id')
+      )
+      // filtros opcionales
+      ->when(isset($filter->shoeId), fn($q) => $q->where('oi.shoe_id', $filter->shoeId))
+      ->when(isset($filter->accountId), fn($q) => $q->where('o.account_id', $filter->accountId))
+      ->when(isset($filter->locatableId), fn($q) => $q->where('o.locatable_id', $filter->locatableId))
+      // por si los joins generan duplicados del mismo shipment_item:
+      ->distinct('si.id');
 
-    if (isset($filter->accountId)) {
-      $query->select('si.*')
-        ->from('ifulfillment__shipment_items as si')
-        ->join('ifulfillment__order_items as oi', 'oi.id', '=', 'si.order_item_id')
-        ->join('ifulfillment__orders as o', 'o.id', '=', 'oi.order_id')
-        ->whereNull('si.shipping_id')
-        ->where('o.account_id', $filter->accountId);
-    }
 
     //Response
     return $query;
@@ -130,6 +134,32 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
         ])
         ->groupBy('a.id', 'a.title')
         ->get();
+    }
+    if (isset($filter->locatationsByAccount)) {
+      $locale = app()->getLocale();
+      $response = DB::table('ifulfillment__orders as o')
+        ->leftJoin('ifulfillment__order_items as oi', 'oi.order_id', '=', 'o.id')
+        ->leftJoin('ifulfillment__shipment_items as si', 'si.order_item_id', '=', 'oi.id')
+        ->leftJoin('ilocation__locatables as lt', 'lt.id', '=', 'o.locatable_id')
+        ->join('ilocation__locatable_translations as ltt', function ($join) use ($locale) {
+          $join->on('ltt.locatable_id', '=', 'lt.id')->where('ltt.locale', '=', $locale);
+        })
+        ->join('ilocation__city_translations as ltc', function ($join) use ($locale) {
+          $join->on('ltc.city_id', '=', 'lt.city_id')->where('ltc.locale', '=', $locale);
+        })
+        ->where('o.account_id', $filter->locatationsByAccount)
+        ->whereNotNull('si.id')          // asegura que la orden tenga shipment_items
+        ->whereNotNull('o.locatable_id') // opcional, si no quieres nulos
+        ->selectRaw("
+          o.locatable_id as id,
+          lt.address as address,
+          ltt.title as title,
+          ltc.name as city
+        ")
+        ->distinct('id')
+        ->get();
+
+      $response = Collection::make($response);
     }
     return $response;
   }
