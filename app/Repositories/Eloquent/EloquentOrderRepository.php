@@ -53,6 +53,11 @@ class EloquentOrderRepository extends EloquentCoreRepository implements OrderRep
         ->groupBy('account_id');
     }
 
+    if (isset($filter->search)) {
+      $query->where('external_id', 'like', "%{$filter->search}%")
+        ->orWhere('id', 'like', '%' . $filter->search . '%');
+    }
+
     //Response
     return $query;
   }
