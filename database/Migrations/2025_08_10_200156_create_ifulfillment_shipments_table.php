@@ -22,9 +22,13 @@ return new class extends Migration {
       $table->text('comments')->nullable();
       $table->integer('units_per_package')->default(0);
       $table->integer('packages_total')->default(0);
+      $table->integer('stage_id')->unsigned()->default(0);
+      $table->integer('locatable_id')->unsigned();
+      $table->json('options')->nullable();
       // Foreign keys
       $table->foreign('account_id')->references('id')->on('iaccount__accounts')->onDelete('cascade');
       $table->foreign('parent_id')->references('id')->on('ifulfillment__shipments')->onDelete('cascade');
+      $table->foreign('locatable_id')->references('id')->on('ilocation__locatables')->onDelete('restrict');
       // Audit fields
       $table->timestamps();
       $table->auditStamps();
@@ -41,6 +45,7 @@ return new class extends Migration {
     Schema::table('ifulfillment__shipments', function (Blueprint $table) {
       $table->dropForeign(['account_id']);
       $table->dropForeign(['parent_id']);
+      $table->dropForeign(['locatable_id']);
     });
     Schema::dropIfExists('ifulfillment__shipments');
   }

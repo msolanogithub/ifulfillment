@@ -154,7 +154,7 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
           o.locatable_id as id,
           lt.address as address,
           ltt.title as title,
-          ltc.name as city
+          ltc.title as city
         ")
         ->distinct('id')
         ->get();

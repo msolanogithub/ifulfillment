@@ -2,6 +2,7 @@
 
 namespace Modules\Ifulfillment\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Imagina\Icore\Models\CoreModel;
@@ -37,7 +38,18 @@ class Shipment extends CoreModel
     'shipped_at',
     'comments',
     'units_per_package',
-    'packages_total'
+    'packages_total',
+    'stage_id',
+    'locatable_id',
+    'options'
+  ];
+
+  protected $casts = [
+    'options' => 'json'
+  ];
+
+  public $appends = [
+    'stage'
   ];
 
   public function account(): BelongsTo
@@ -58,5 +70,18 @@ class Shipment extends CoreModel
   public function items(): HasMany
   {
     return $this->hasMany(ShipmentItem::class, 'shipping_id', 'id');
+  }
+
+  public function stage(): Attribute
+  {
+    return Attribute::get(function () {
+      $model = new ShipmentStage();
+      return $model->show($this->stage_id);
+    });
+  }
+
+  public function locatable(): BelongsTo
+  {
+    return $this->belongsTo('Modules\Ilocation\Models\Locatable', 'locatable_id');
   }
 }

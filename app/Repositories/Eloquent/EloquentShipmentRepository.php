@@ -2,6 +2,7 @@
 
 namespace Modules\Ifulfillment\Repositories\Eloquent;
 
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Ifulfillment\Models\ShipmentItem;
 use Modules\Ifulfillment\Repositories\ShipmentRepository;
 use Imagina\Icore\Repositories\Eloquent\EloquentCoreRepository;
@@ -48,6 +49,12 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
      *
      */
 
+    if (isset($filter->cityId)) {
+      $query->whereHas('locatable', function ($q) use ($filter) {
+        $q->where('city_id', $filter->cityId);
+      });
+    }
+
     //Response
     return $query;
   }
@@ -72,15 +79,47 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
      *
      */
 
+
     //Response
     return $model;
   }
 
   protected function afterCreate(Model &$model, array &$data): void
   {
-    if(isset($data['items']) && is_array($data['items'])){
+    if (isset($data['items']) && is_array($data['items'])) {
       ShipmentItem::whereIn('id', $data['items'])
         ->update(['shipping_id' => $model->id]);
     }
+  }
+
+  public function getGroupData(?object $params): Collection
+  {
+    $filter = $params->filter ?? [];
+    $response = new Collection();
+    if (isset($filter->getUniqueAccounts)) {
+      $response = $this->model->query()
+        ->from('ifulfillment__shipments as s')
+        ->join('iaccount__accounts as a', 'a.id', '=', 's.account_id')
+        ->select([
+          'a.id as id',
+          'a.title as title'
+        ])
+        ->groupBy('a.id', 'a.title')
+        ->get();
+    }
+    if (isset($filter->getUniqueCities)) {
+      $response = $this->model->query()
+        ->from('ifulfillment__shipments as s')
+        ->join('ilocation__locatables as lt', 'lt.id', '=', 's.locatable_id')
+        ->join('ilocation__city_translations as lc', 'lc.city_id', '=', 'lt.city_id')
+        ->select([
+          'lc.id as id',
+          'lc.title as title'
+        ])
+        ->groupBy('lc.id', 'lc.title')
+        ->get();
+    }
+
+    return $response;
   }
 }
