@@ -2,6 +2,7 @@
 
 namespace Modules\Ifulfillment\Repositories\Eloquent;
 
+use Illuminate\Database\Eloquent\Collection;
 use Modules\Ifulfillment\Repositories\OrderRepository;
 use Imagina\Icore\Repositories\Eloquent\EloquentCoreRepository;
 use Illuminate\Database\Eloquent\Builder;
@@ -53,9 +54,10 @@ class EloquentOrderRepository extends EloquentCoreRepository implements OrderRep
         ->groupBy('account_id');
     }
 
-    if (isset($filter->search)) {
-      $query->where('external_id', 'like', "%{$filter->search}%")
-        ->orWhere('id', 'like', '%' . $filter->search . '%');
+    if (isset($filter->cityId)) {
+      $query->whereHas('locatable', function ($q) use ($filter) {
+        $q->where('city_id', $filter->cityId);
+      });
     }
 
     //Response
@@ -84,5 +86,24 @@ class EloquentOrderRepository extends EloquentCoreRepository implements OrderRep
 
     //Response
     return $model;
+  }
+
+  public function getGroupData(?object $params): Collection
+  {
+    $filter = $params->filter ?? [];
+    $response = new Collection();
+    if (isset($filter->getUniqueCities)) {
+      $response = $this->model->query()
+        ->from('ifulfillment__orders as o')
+        ->join('ilocation__locatables as lt', 'lt.id', '=', 'o.locatable_id')
+        ->join('ilocation__city_translations as lc', 'lc.city_id', '=', 'lt.city_id')
+        ->select([
+          'lc.id as id',
+          'lc.title as title'
+        ])
+        ->groupBy('lc.id', 'lc.title')
+        ->get();
+    }
+    return $response;
   }
 }

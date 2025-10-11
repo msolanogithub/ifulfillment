@@ -98,6 +98,7 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
     return $model;
   }
 
+
   public function getGroupData(?object $params): Collection
   {
     $filter = $params->filter ?? [];
@@ -115,9 +116,10 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
         ->select([
           'oi.shoe_id as id',
           'st.title as title',
+          's.reference as reference',
           DB::raw('SUM(si.quantity) AS quantity'),
         ])
-        ->groupBy('oi.shoe_id', 'st.title')
+        ->groupBy('oi.shoe_id', 'st.title', 's.reference')
         ->get();
     }
     if (isset($filter->getUniqueAccounts)) {

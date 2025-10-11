@@ -67,6 +67,12 @@ class EloquentOrderItemRepository extends EloquentCoreRepository implements Orde
       });
     }
 
+    if (isset($filter->cityId)) {
+      $query->whereHas('order.locatable', function ($q) use ($filter) {
+        $q->where('city_id', $filter->cityId);
+      });
+    }
+
     if (isset($filter->withPendingQuantity)) {
       $query->whereRaw(
         'COALESCE((

@@ -49,6 +49,8 @@ class Order extends CoreModel
     'mainfile' => 'single'
   ];
 
+  public array $searchable = ['external_id', 'id'];
+
   public function account(): BelongsTo
   {
     return $this->belongsTo('Modules\Iaccount\Models\Account', 'account_id');
