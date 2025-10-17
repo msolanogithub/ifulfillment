@@ -38,6 +38,7 @@ return new class extends Migration {
   {
     Schema::table('ifulfillment__order_items', function (Blueprint $table) {
       $table->dropForeign(['order_id']);
+      $table->dropForeign(['shoe_id']);
     });
     Schema::dropIfExists('ifulfillment__order_items');
   }
