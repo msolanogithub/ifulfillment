@@ -36,10 +36,12 @@ class ShipmentItem extends CoreModel
     'sizes',
     'supplier_id',
     'stage_id',
+    'options'
   ];
 
   protected $casts = [
     'sizes' => 'array',
+    'options' => 'json'
   ];
 
   protected $appends = [
