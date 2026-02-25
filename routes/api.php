@@ -6,6 +6,8 @@ use Modules\Ifulfillment\Http\Controllers\Api\OrderItemApiController;
 use Modules\Ifulfillment\Http\Controllers\Api\ShipmentApiController;
 use Modules\Ifulfillment\Http\Controllers\Api\ShipmentItemApiController;
 
+use Modules\Ifulfillment\Http\Controllers\Api\DynamicOptionsApiController;
+
 // add-use-controller
 
 
@@ -81,6 +83,21 @@ Route::prefix('/ifulfillment/v1')->group(function () {
     'prefix' => 'shipment-item-stages',
     'staticEntity' => 'Modules\Ifulfillment\Models\ShipmentItemStage',
     'middleware' => ['index' => [], 'show' => []]
+  ]);
+  Route::apiCrud([
+    'module' => 'ifulfillment',
+    'prefix' => 'dynamic-options',
+    'controller' => DynamicOptionsApiController::class,
+    'permission' => 'ifulfillment.dynamic-options',
+    //'middleware' => ['create' => [], 'index' => [], 'show' => [], 'update' => [], 'delete' => [], 'restore' => []],
+    // 'customRoutes' => [ // Include custom routes if needed
+    //  [
+    //    'method' => 'post', // get,post,put....
+    //    'path' => '/some-path', // Route Path
+    //    'uses' => 'ControllerMethodName', //Name of the controller method to use
+    //    'middleware' => [] // if not set up middleware, auth:api will be the default
+    //  ]
+    // ]
   ]);
 // append
 

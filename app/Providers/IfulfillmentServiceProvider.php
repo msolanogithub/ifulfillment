@@ -24,7 +24,12 @@ use Modules\Ifulfillment\Repositories\Eloquent\EloquentShipmentItemRepository;
 use Modules\Ifulfillment\Repositories\Cache\CacheShipmentItemDecorator;
 use Modules\Ifulfillment\Repositories\ShipmentItemRepository;
 use Modules\Ifulfillment\Models\ShipmentItem;
+use Modules\Ifulfillment\Repositories\Eloquent\EloquentDynamicOptionsRepository;
+use Modules\Ifulfillment\Repositories\Cache\CacheDynamicOptionsDecorator;
+use Modules\Ifulfillment\Repositories\DynamicOptionsRepository;
+use Modules\Ifulfillment\Models\DynamicOptions;
 // append-use-bindings
+
 
 
 
@@ -204,7 +209,15 @@ $this->app->bind(ShipmentItemRepository::class, function () {
         ? new CacheShipmentItemDecorator($repository)
         : $repository;
 });
+$this->app->bind(DynamicOptionsRepository::class, function () {
+    $repository = new EloquentDynamicOptionsRepository(new DynamicOptions());
+
+    return config('app.cache')
+        ? new CacheDynamicOptionsDecorator($repository)
+        : $repository;
+});
 // append-bindings
+
 
 
 
