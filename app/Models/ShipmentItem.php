@@ -5,6 +5,7 @@ namespace Modules\Ifulfillment\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Imagina\Icore\Models\CoreModel;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
 class ShipmentItem extends CoreModel
 {
@@ -41,7 +42,7 @@ class ShipmentItem extends CoreModel
 
   protected $casts = [
     'sizes' => 'array',
-    'options' => 'json'
+    'options' => AsArrayObject::class
   ];
 
   protected $appends = [

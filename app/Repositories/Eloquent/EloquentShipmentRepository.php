@@ -87,8 +87,10 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
   protected function afterCreate(Model &$model, array &$data): void
   {
     if (isset($data['items']) && is_array($data['items'])) {
-      ShipmentItem::whereIn('id', $data['items'])
-        ->update(['shipping_id' => $model->id]);
+      foreach ($data['items'] as $item) {
+        ShipmentItem::where('id', $item['id'])
+          ->update(['shipping_id' => $model->id, 'options' => $item['options']]);
+      }
     }
   }
 
