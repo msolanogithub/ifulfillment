@@ -95,7 +95,7 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
     }
   }
 
-  protected function afterUpdate(Model &$model, array &$data): void
+  protected function afterUpdate(&$model, &$data): void
   {
     if (!isset($data['items']) || !is_array($data['items'])) return;
 
@@ -118,6 +118,7 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
       $shipmentItem->update([
         'sizes' => $incomingSizes->values()->toArray(),
         'quantity' => $itemQty,
+        'options' => $item['options'] ?? null,
       ]);
 
       $totalShipped += $itemQty;
@@ -136,29 +137,56 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
 
       if (!$hasDiff) continue;
 
-      // 5. Find the open ShipmentItem for the same OrderItem
-      $openItem = ShipmentItem::where('order_item_id', $orderItemId)
+      // 5. Find ALL open ShipmentItems for the same OrderItem (oldest first)
+      $openItems = ShipmentItem::where('order_item_id', $orderItemId)
         ->whereNull('shipping_id')
         ->where('id', '!=', $shipmentItem->id)
-        ->first();
+        ->orderBy('id')
+        ->get();
 
-      if (!$openItem) continue;
+      if ($openItems->isEmpty()) continue;
 
-      // 6. Redistribute diff into open item's sizes
-      $openSizes = collect($openItem->sizes)->keyBy('size');
+      // 6. Redistribute diff across open items (first-come-first-served per size)
+      $remainingDiff = $diffs; // per-size remaining diff to distribute
 
-      foreach ($diffs as $size => $diff) {
-        if ($diff === 0) continue;
-        $currentQty = (int)($openSizes->get((string)$size)['quantity'] ?? 0);
-        $newQty = max(0, $currentQty + $diff);
-        $openSizes->put((string)$size, ['size' => (string)$size, 'quantity' => $newQty]);
+      foreach ($openItems as $openItem) {
+        // Check if there is still any diff left to distribute
+        $anyLeft = false;
+        foreach ($remainingDiff as $diff) {
+          if ($diff !== 0) { $anyLeft = true; break; }
+        }
+        if (!$anyLeft) break;
+
+        $openSizes = collect($openItem->sizes)->keyBy('size');
+        $changed = false;
+
+        foreach ($remainingDiff as $size => $diff) {
+          if ($diff === 0) continue;
+
+          $currentQty = (int)($openSizes->get((string)$size)['quantity'] ?? 0);
+          $newQty     = max(0, $currentQty + $diff);
+          $applied    = $newQty - $currentQty; // actual change (may be less than diff for over-prod)
+
+          $openSizes->put((string)$size, ['size' => (string)$size, 'quantity' => $newQty]);
+          $remainingDiff[$size] -= $applied;
+          $changed = true;
+        }
+
+        if (!$changed) continue;
+
+        $newOpenSizes = $openSizes->values()->toArray();
+        $newQtyTotal  = collect($newOpenSizes)->sum('quantity');
+
+        // Delete open item if it reaches zero — no production left to plan
+        if ($newQtyTotal === 0) {
+          $openItem->delete();
+        } else {
+          $openItem->update([
+            'sizes'    => $newOpenSizes,
+            'quantity' => $newQtyTotal,
+          ]);
+        }
       }
-
-      $newOpenSizes = $openSizes->values()->toArray();
-      $openItem->update([
-        'sizes' => $newOpenSizes,
-        'quantity' => collect($newOpenSizes)->sum('quantity'),
-      ]);
     }
 
     // 7. Recompute Shipment.total_items
