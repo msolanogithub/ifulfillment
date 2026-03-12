@@ -191,7 +191,47 @@ return [
       'defaultAccess' => []
     ],
   ],
-  // append
+      'ifulfillment.traces' => [
+        'manage' => [
+            'title' => 'ifulfillment::traces.manage.title',
+            'description' => 'ifulfillment::traces.manage.description',
+            'onlyFor' => [],
+            'defaultAccess' => []
+        ],
+        'index' => [
+            'title' => 'ifulfillment::traces.list.title',
+            'description' => 'ifulfillment::traces.index.description',
+            'onlyFor' => [],
+            'defaultAccess' => []
+        ],
+        'create' => [
+            'title' => 'ifulfillment::traces.create.title',
+            'description' => 'ifulfillment::traces.create.description',
+            'onlyFor' => [],
+            'defaultAccess' => []
+        ],
+        'edit' => [
+            'title' => 'ifulfillment::traces.edit.title',
+            'description' => 'ifulfillment::traces.edit.description',
+            'onlyFor' => [],
+            'defaultAccess' => []
+        ],
+        'destroy' => [
+            'title' => 'ifulfillment::traces.destroy.title',
+            'description' => 'ifulfillment::traces.destroy.description',
+            'onlyFor' => [],
+            'defaultAccess' => []
+        ],
+        'restore' => [
+            'title' => 'ifulfillment::traces.restore.title',
+            'description' => 'ifulfillment::traces.restore.description',
+            'onlyFor' => [],
+            'defaultAccess' => []
+        ],
+    ],
+    // append
+
+
 
 
 ];

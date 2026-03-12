@@ -5,6 +5,7 @@ namespace Modules\Ifulfillment\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Imagina\Icore\Models\CoreModel;
 use Modules\Iaccount\Models\Account;
 
@@ -70,6 +71,11 @@ class Shipment extends CoreModel
   public function items(): HasMany
   {
     return $this->hasMany(ShipmentItem::class, 'shipping_id', 'id');
+  }
+
+  public function traces(): MorphMany
+  {
+    return $this->morphMany(Trace::class, 'traceable')->latest();
   }
 
   public function stage(): Attribute

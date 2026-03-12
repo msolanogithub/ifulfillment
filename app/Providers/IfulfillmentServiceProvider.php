@@ -28,7 +28,12 @@ use Modules\Ifulfillment\Repositories\Eloquent\EloquentDynamicOptionsRepository;
 use Modules\Ifulfillment\Repositories\Cache\CacheDynamicOptionsDecorator;
 use Modules\Ifulfillment\Repositories\DynamicOptionsRepository;
 use Modules\Ifulfillment\Models\DynamicOptions;
+use Modules\Ifulfillment\Repositories\Eloquent\EloquentTraceRepository;
+use Modules\Ifulfillment\Repositories\Cache\CacheTraceDecorator;
+use Modules\Ifulfillment\Repositories\TraceRepository;
+use Modules\Ifulfillment\Models\Trace;
 // append-use-bindings
+
 
 
 
@@ -216,7 +221,15 @@ $this->app->bind(DynamicOptionsRepository::class, function () {
         ? new CacheDynamicOptionsDecorator($repository)
         : $repository;
 });
+$this->app->bind(TraceRepository::class, function () {
+    $repository = new EloquentTraceRepository(new Trace());
+
+    return config('app.cache')
+        ? new CacheTraceDecorator($repository)
+        : $repository;
+});
 // append-bindings
+
 
 
 

@@ -4,6 +4,7 @@ namespace Modules\Ifulfillment\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Imagina\Icore\Models\CoreModel;
 
 class Order extends CoreModel
@@ -64,6 +65,11 @@ class Order extends CoreModel
   public function items(): HasMany
   {
     return $this->hasMany(OrderItem::class, 'order_id');
+  }
+
+  public function traces(): MorphMany
+  {
+    return $this->morphMany(Trace::class, 'traceable')->latest();
   }
 
   public function files()
