@@ -241,6 +241,18 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
         ->groupBy('a.id', 'a.title')
         ->get();
     }
+    if (isset($filter->getInProgressGroupedByAccount)) {
+      $response = $this->model->query()
+        ->from('ifulfillment__shipments as s')
+        ->join('iaccount__accounts as a', 'a.id', '=', 's.account_id')
+        ->select([
+          'a.id as id',
+          'a.title as title'
+        ])
+        ->where('s.stage_id', '0')
+        ->groupBy('a.id', 'a.title')
+        ->get();
+    }
     if (isset($filter->getUniqueCities)) {
       $response = $this->model->query()
         ->from('ifulfillment__shipments as s')
@@ -250,6 +262,19 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
           'lc.id as id',
           'lc.title as title'
         ])
+        ->groupBy('lc.id', 'lc.title')
+        ->get();
+    }
+    if (isset($filter->getInProgressGroupedByCity)) {
+      $response = $this->model->query()
+        ->from('ifulfillment__shipments as s')
+        ->join('ilocation__locatables as lt', 'lt.id', '=', 's.locatable_id')
+        ->join('ilocation__city_translations as lc', 'lc.city_id', '=', 'lt.city_id')
+        ->select([
+          'lc.id as id',
+          'lc.title as title'
+        ])
+        ->where('s.stage_id', '0')
         ->groupBy('lc.id', 'lc.title')
         ->get();
     }
