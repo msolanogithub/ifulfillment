@@ -153,7 +153,10 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
         // Check if there is still any diff left to distribute
         $anyLeft = false;
         foreach ($remainingDiff as $diff) {
-          if ($diff !== 0) { $anyLeft = true; break; }
+          if ($diff !== 0) {
+            $anyLeft = true;
+            break;
+          }
         }
         if (!$anyLeft) break;
 
@@ -164,8 +167,8 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
           if ($diff === 0) continue;
 
           $currentQty = (int)($openSizes->get((string)$size)['quantity'] ?? 0);
-          $newQty     = max(0, $currentQty + $diff);
-          $applied    = $newQty - $currentQty; // actual change (may be less than diff for over-prod)
+          $newQty = max(0, $currentQty + $diff);
+          $applied = $newQty - $currentQty; // actual change (may be less than diff for over-prod)
 
           $openSizes->put((string)$size, ['size' => (string)$size, 'quantity' => $newQty]);
           $remainingDiff[$size] -= $applied;
@@ -175,14 +178,14 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
         if (!$changed) continue;
 
         $newOpenSizes = $openSizes->values()->toArray();
-        $newQtyTotal  = collect($newOpenSizes)->sum('quantity');
+        $newQtyTotal = collect($newOpenSizes)->sum('quantity');
 
         // Delete open item if it reaches zero — no production left to plan
         if ($newQtyTotal === 0) {
           $openItem->delete();
         } else {
           $openItem->update([
-            'sizes'    => $newOpenSizes,
+            'sizes' => $newOpenSizes,
             'quantity' => $newQtyTotal,
           ]);
         }
@@ -241,18 +244,6 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
         ->groupBy('a.id', 'a.title')
         ->get();
     }
-    if (isset($filter->getInProgressGroupedByAccount)) {
-      $response = $this->model->query()
-        ->from('ifulfillment__shipments as s')
-        ->join('iaccount__accounts as a', 'a.id', '=', 's.account_id')
-        ->select([
-          'a.id as id',
-          'a.title as title'
-        ])
-        ->where('s.stage_id', '0')
-        ->groupBy('a.id', 'a.title')
-        ->get();
-    }
     if (isset($filter->getUniqueCities)) {
       $response = $this->model->query()
         ->from('ifulfillment__shipments as s')
@@ -265,7 +256,23 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
         ->groupBy('lc.id', 'lc.title')
         ->get();
     }
-    if (isset($filter->getInProgressGroupedByCity)) {
+    if (isset($filter->getGroupedByAccount)) {
+      $response = $this->model->query()
+        ->from('ifulfillment__shipments as s')
+        ->join('iaccount__accounts as a', 'a.id', '=', 's.account_id')
+        ->select([
+          'a.id as id',
+          'a.title as title'
+        ])
+        ->where('s.stage_id', $filter->getGroupedByAccount)
+        ->groupBy('a.id', 'a.title');
+
+      if (isset($filter->createdAt)) $response->where('s.shipped_at', $filter->createdAt);
+
+      $response = $response->get();
+    }
+
+    if (isset($filter->getGroupedByCity)) {
       $response = $this->model->query()
         ->from('ifulfillment__shipments as s')
         ->join('ilocation__locatables as lt', 'lt.id', '=', 's.locatable_id')
@@ -274,9 +281,12 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
           'lc.id as id',
           'lc.title as title'
         ])
-        ->where('s.stage_id', '0')
-        ->groupBy('lc.id', 'lc.title')
-        ->get();
+        ->where('s.stage_id', $filter->getGroupedByCity)
+        ->groupBy('lc.id', 'lc.title');
+
+      if (isset($filter->createdAt)) $response->where('s.shipped_at', $filter->createdAt);
+
+      $response = $response->get();
     }
 
     return $response;
