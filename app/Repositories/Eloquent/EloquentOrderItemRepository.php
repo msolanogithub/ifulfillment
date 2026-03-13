@@ -61,6 +61,17 @@ class EloquentOrderItemRepository extends EloquentCoreRepository implements Orde
         ->groupBy('shoe_id');
     }
 
+    if (isset($filter->getPendingGroupedByShoe)) {
+      $query->select('shoe_id')
+        ->selectRaw('SUM(ifulfillment__order_items.quantity - COALESCE((
+            SELECT SUM(si.quantity)
+            FROM ifulfillment__shipment_items si
+            WHERE si.order_item_id = ifulfillment__order_items.id
+          ), 0)) as shoes_quantity')
+        ->groupBy('shoe_id')
+        ->havingRaw('shoes_quantity > 0');
+    }
+
     if (isset($filter->accountId)) {
       $query->whereHas('order', function ($q) use ($filter) {
         $q->where('account_id', $filter->accountId);

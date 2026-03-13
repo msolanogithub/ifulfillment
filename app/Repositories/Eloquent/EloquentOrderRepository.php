@@ -54,6 +54,18 @@ class EloquentOrderRepository extends EloquentCoreRepository implements OrderRep
         ->groupBy('account_id');
     }
 
+    if (isset($filter->getPendingGroupedByAccount)) {
+      $query->select('account_id')
+        ->selectRaw('SUM(ifulfillment__orders.quantity - COALESCE((
+            SELECT SUM(si.quantity)
+            FROM ifulfillment__shipment_items si
+            INNER JOIN ifulfillment__order_items oi ON oi.id = si.order_item_id
+            WHERE oi.order_id = ifulfillment__orders.id
+          ), 0)) as shoes_quantity')
+        ->groupBy('account_id')
+        ->havingRaw('shoes_quantity > 0');
+    }
+
     if (isset($filter->cityId)) {
       $query->whereHas('locatable', function ($q) use ($filter) {
         $q->where('city_id', $filter->cityId);
