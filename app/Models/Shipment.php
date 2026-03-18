@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Imagina\Icore\Models\CoreModel;
 use Modules\Iaccount\Models\Account;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
 class Shipment extends CoreModel
 {
@@ -45,8 +46,8 @@ class Shipment extends CoreModel
   ];
 
   protected $casts = [
-    'options' => 'json',
-    'packaging' => 'json'
+    'options' => AsArrayObject::class,
+    'packaging' => AsArrayObject::class,
   ];
 
   public $appends = [

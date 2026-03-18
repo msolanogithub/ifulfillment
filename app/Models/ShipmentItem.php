@@ -44,7 +44,7 @@ class ShipmentItem extends CoreModel
   protected $casts = [
     'sizes' => 'array',
     'options' => AsArrayObject::class,
-    'packaging' => 'json'
+    'packaging' => AsArrayObject::class,
   ];
 
   protected $appends = [
