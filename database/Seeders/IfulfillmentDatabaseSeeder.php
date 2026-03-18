@@ -11,6 +11,8 @@ class IfulfillmentDatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([]);
+        $this->call([
+            ShipmentPackagingMigrationSeeder::class,
+        ]);
     }
 }

@@ -21,9 +21,6 @@ return new class extends Migration {
       $table->string('type');
       // Contextual data for the event
       $table->json('payload')->nullable();
-      // Author (null = system-generated trace)
-      $table->unsignedInteger('created_by')->nullable();
-      $table->foreign('created_by')->references('id')->on('iauth__users')->onDelete('set null');
       // Indexes
       $table->index(['traceable_type', 'traceable_id']);
       $table->index('type');

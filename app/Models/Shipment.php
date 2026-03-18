@@ -38,15 +38,15 @@ class Shipment extends CoreModel
     'total_items',
     'shipped_at',
     'comments',
-    'units_per_package',
-    'packages_total',
     'stage_id',
     'locatable_id',
-    'options'
+    'options',
+    'packaging'
   ];
 
   protected $casts = [
-    'options' => 'json'
+    'options' => 'json',
+    'packaging' => 'json'
   ];
 
   public $appends = [
