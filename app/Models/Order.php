@@ -47,7 +47,7 @@ class Order extends CoreModel
     'deleted' => []
   ];
   public array $mediaFillable = [
-    'mainfile' => 'single'
+    'mainfile' => 'multiple'
   ];
 
   public array $searchable = ['external_id', 'id'];

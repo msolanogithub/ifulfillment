@@ -16,17 +16,17 @@ class SupplierType extends CoreStaticModel
       self::MANUFACTURING => [
         'id' => self::MANUFACTURING,
         'title' => 'Fabricación',
-        'icon' => 'fa-light fa-industry-windows'
+        'icon' => 'factory'
       ],
       self::INVENTORY => [
         'id' => self::INVENTORY,
         'title' => 'Inventario',
-        'icon' => 'fa-light fa-shelves'
+        'icon' => 'widgets'
       ],
       self::EXTERNAL => [
         'id' => self::EXTERNAL,
         'title' => 'Externo',
-        'icon' => 'fa-light fa-boxes-packing'
+        'icon' => 'handshake'
       ]
     ];
   }
