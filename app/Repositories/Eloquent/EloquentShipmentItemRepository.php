@@ -137,7 +137,7 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
         ->groupBy('a.id', 'a.title')
         ->get();
     }
-    if (isset($filter->locatationsByAccount)) {
+    if (isset($filter->locationsByAccount)) {
       $locale = app()->getLocale();
       $response = DB::table('ifulfillment__orders as o')
         ->leftJoin('ifulfillment__order_items as oi', 'oi.order_id', '=', 'o.id')
