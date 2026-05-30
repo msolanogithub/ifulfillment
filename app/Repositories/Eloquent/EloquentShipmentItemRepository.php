@@ -149,7 +149,7 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
         ->join('ilocation__city_translations as ltc', function ($join) use ($locale) {
           $join->on('ltc.city_id', '=', 'lt.city_id')->where('ltc.locale', '=', $locale);
         })
-        ->where('o.account_id', $filter->locatationsByAccount)
+        ->where('o.account_id', $filter->locationsByAccount)
         ->whereNotNull('si.id')          // asegura que la orden tenga shipment_items
         ->whereNotNull('o.locatable_id') // opcional, si no quieres nulos
         ->selectRaw("
