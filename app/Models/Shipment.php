@@ -91,4 +91,12 @@ class Shipment extends CoreModel
   {
     return $this->belongsTo('Modules\Ilocation\Models\Locatable', 'locatable_id');
   }
+
+  public function tags()
+  {
+    if (isModuleEnabled('Itag')) {
+      return app(\Modules\Itag\Relations\TagsRelation::class)->resolve($this);
+    }
+    return new \Imagina\Icore\Relations\EmptyRelation();
+  }
 }

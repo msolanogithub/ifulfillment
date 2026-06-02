@@ -14,6 +14,7 @@ class IfulfillmentDatabaseSeeder extends Seeder
     $this->call([
       ShipmentPackagingMigrationSeeder::class,
       OrderItemIsCompletedMigrationSeeder::class,
+      DynamicOptionsToTagsMigrationSeeder::class
     ]);
   }
 }
