@@ -23,11 +23,17 @@ class ShipmentItem extends CoreModel
   //Instance external/internal events to dispatch with extraData
   public array $dispatchesEventsWithBindings = [
     //eg. ['path' => 'path/module/event', 'extraData' => [/*...optional*/]]
-    'created' => [],
+    'created' => [
+      ['path' => 'Modules\Itag\Events\ManageTags', 'extraData' => ['mode' => 'set']]
+    ],
     'creating' => [],
-    'updated' => [],
+    'updated' => [
+      ['path' => 'Modules\Itag\Events\ManageTags', 'extraData' => ['mode' => 'set']]
+    ],
     'updating' => [],
-    'deleting' => [],
+    'deleting' => [
+      ['path' => 'Modules\Itag\Events\ManageTags', 'extraData' => ['mode' => 'remove']]
+    ],
     'deleted' => []
   ];
   protected $fillable = [
