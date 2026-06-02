@@ -44,6 +44,7 @@ class AllocationShipmentQuantities
 
         $totalShipped += $itemQty;
         $affectedOrderItemIds[] = $shipmentItem->order_item_id;
+        $this->orderItemCompletion($shipmentItem->order_item_id);
       }
 
       $shipment->update(['total_items' => $totalShipped]);
@@ -70,6 +71,7 @@ class AllocationShipmentQuantities
           $shipmentItem,
           $this->capDiffsToOrderedQuantity($shipmentItem, $diffs, true)
         );
+        $this->orderItemCompletion($shipmentItem->order_item_id);
       }
 
       $shipmentItems->each->delete();
@@ -77,7 +79,7 @@ class AllocationShipmentQuantities
     });
   }
 
-  // Compute per-size diff: positive = under-production, negative = over-production
+  // Compute per-size diff: positive = under-production, negative = overproduction
   private function calculateDiffs(
     Collection $originalSizes,
     Collection $incomingSizes
@@ -308,5 +310,10 @@ class AllocationShipmentQuantities
       'quantity' => $total,
       'options' => $source->options,
     ]);
+  }
+
+  private function orderItemCompletion($orderItemId)
+  {
+    app(OrderItemCompletionService::class)->recalculate($orderItemId);
   }
 }

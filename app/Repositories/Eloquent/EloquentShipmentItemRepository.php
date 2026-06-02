@@ -8,6 +8,7 @@ use Modules\Ifulfillment\Repositories\ShipmentItemRepository;
 use Imagina\Icore\Repositories\Eloquent\EloquentCoreRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Ifulfillment\Services\OrderItemCompletionService;
 
 class EloquentShipmentItemRepository extends EloquentCoreRepository implements ShipmentItemRepository
 {
@@ -72,6 +73,23 @@ class EloquentShipmentItemRepository extends EloquentCoreRepository implements S
 
     //Response
     return $query;
+  }
+
+  protected function afterCreate(Model &$model, array &$data): void
+  {
+    app(OrderItemCompletionService::class)->recalculate($model->order_item_id);
+  }
+
+  protected function afterUpdate(&$model, &$data): void
+  {
+    app(OrderItemCompletionService::class)->recalculate($model->order_item_id);
+  }
+
+  protected function afterDelete(Model &$model): void
+  {
+    // The ShipmentItem row is already gone from the DB at this point,
+    // so recalculate() naturally excludes it from the produced totals.
+    app(OrderItemCompletionService::class)->recalculate($model->order_item_id);
   }
 
   /**
