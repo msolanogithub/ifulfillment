@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+  /**
+   * Run the migrations.
+   * - Adds packaging JSON column to shipment_items
+   */
+  public function up(): void
+  {
+    Schema::table('ifulfillment__order_items', function (Blueprint $table) {
+      $table->boolean('is_completed')
+        ->default(false)
+        ->index()->after('quantity');
+    });
+  }
+
+  /**
+   * Reverse the migrations.
+   */
+  public function down(): void
+  {
+    Schema::table('ifulfillment__order_items', function (Blueprint $table) {
+      $table->dropColumn('is_completed');
+    });
+  }
+};

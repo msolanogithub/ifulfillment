@@ -34,6 +34,7 @@ class OrderItem extends CoreModel
     'order_id',
     'shoe_id',
     'quantity',
+    'is_completed',
     'options',
     'sizes'
   ];
