@@ -104,7 +104,7 @@ class DynamicOptionsToTagsMigrationSeeder extends Seeder
     ShipmentItem::query()
       ->chunkById(500, function ($items) {
         foreach ($items as $item) {
-          $packer = data_get($item->options, 'packer');
+          $packer = data_get($item->packaging, 'packer');
           if (!$packer) continue;
 
           $packerTag = $this->tags->get("packer|{$packer}");
