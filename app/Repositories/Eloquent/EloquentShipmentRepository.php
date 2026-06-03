@@ -59,7 +59,7 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
 
     if (isset($filter->tags)) {
       $query->whereHas('tags', function ($q) use ($filter) {
-        $q->whereIn('tag_id', $filter->tags);
+        $q->whereIn('tag_id', (array)$filter->tags);
       });
     }
 
