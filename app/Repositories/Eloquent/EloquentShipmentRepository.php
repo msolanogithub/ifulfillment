@@ -167,7 +167,7 @@ class EloquentShipmentRepository extends EloquentCoreRepository implements Shipm
           'lc.id as id',
           'lc.title as title'
         ])
-        ->where('s.stage_id', $filter->getGroupedByCity)
+        //->where('s.stage_id', $filter->getGroupedByCity)
         ->groupBy('lc.id', 'lc.title');
 
       if (isset($filter->createdAt)) $response->where('s.shipped_at', $filter->createdAt);
