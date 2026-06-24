@@ -281,6 +281,13 @@ class AllocationShipmentQuantities
         if ($extra > 0) $entry['extraQuantity'] = $extra;
 
         $sizes[] = $entry;
+
+        unset($totalPerSize[$sizeKey]);
+      }
+
+      // Add sizes that only exist in ShipmentItems
+      foreach ($totalPerSize as $sizeKey => $produced) {
+        $sizes[] = ['size' => $sizeKey, 'quantity' => 0, 'extraQuantity' => $produced];
       }
 
       $orderItem->update(['sizes' => $sizes,]);
